@@ -10,8 +10,24 @@
 Играта комбинира **едукативни прашања**, **реални сценарија** и **интерактивни мини-игри** за да го направи учењето интересно, разбирливо и ефективно.
 
 ### 🇬🇧 English
-**“Cyber Security”** is an educational video game for children aged **8–14**, designed to teach the fundamentals of online safety through fun **Super Mario–style gameplay**.  
-The game combines **educational questions**, **real-life scenarios**, and **interactive mini-games** to make learning engaging, simple, and effective.
+Cyber Specialists
+
+The game will include five main levels, each focused on a different internet safety topic.
+
+Level 1: “Safe Password Creation”
+In this level, children create passwords for different purposes. As they type, the game shows whether the password is weak or strong. Weak passwords visually break on the screen, while strong passwords remain unbreakable. In this way, children learn that strong passwords should include uppercase and lowercase letters, numbers, and symbols.
+
+Level 2: “Danger of Strangers Online”
+This level simulates online communication, where children must identify safe and suspicious messages. Different messages appear, and the player must click whether the message is safe or dangerous. Messages such as “Keep this a secret,” “Don’t tell your parents,” or requests for personal information are unsafe, while messages from school friends or family members are considered safe. The child earns points for each correct answer.
+
+Level 3: “Personal Data Protector”
+This is a drag-and-drop game where the child receives cards with different types of information and must sort them into two boxes: “Safe to Share” and “Keep Private.” For example, a name may be safe to share on some profiles, a favorite color is safe, but an address or phone number should never be shared online.
+
+Level 4: “Scam Hunter”
+This level shows children fake websites, emails, and pop-up windows. The child has limited time to find all suspicious elements on the page, such as offers that seem too good to be true, strange URLs, spelling mistakes, or buttons that look fake. This teaches children to be cautious while browsing the internet.
+
+Level 5: “Defending Against Online Bullying”
+In this level, children are given different scenarios with multiple-choice answers. The child reads a situation and must choose the best response—whether to block, report, tell a trusted adult, or not respond. The game awards points when the child chooses positive and appropriate actions.
 
 ---
 

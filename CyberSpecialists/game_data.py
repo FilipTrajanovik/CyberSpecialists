@@ -1,5 +1,5 @@
 """
-Game data - Stories and Tips in BOTH Macedonian and Albanian
+Game data - Stories and Tips in Macedonian, Albanian, and English
 """
 
 # Real stories - Macedonian
@@ -82,7 +82,7 @@ REAL_STORIES_MK = {
         "title": "Приказна: Петар и Познатата Снимка",
         "story": [
             "Петар имаше 13 години и играше фудбал во училишниот тим.",
-            "На еден тренинг, тој се сопнал и паднал во калта пред сите. Сите се смееле - тоа беше смешно.",
+            "На еден тренинг, тој се сопнал и паднал во калта перед сите. Сите се смееле - тоа беше смешно.",
             "Но неговиот другар Андреј го снимал на телефон. Петар помислил дека тоа е само за шега.",
             "Следниот ден, на паузата, сите го гледале чудно. Некои се смееле.",
             "'Петре, ти си познат!' - извикал некој.",
@@ -174,7 +174,7 @@ REAL_STORIES_SQ = {
             "Së bashku e raportuan faqen. Zbuluan se mijëra fëmijë ishin mashtruar në të njëjtën mënyrë.",
             "Njerëzit pas mashtrimit po vidhnin para nga kartat e kreditit të prindërve.",
             "Sofia mësoi: Nëse diçka tingëllon shumë mirë për të qenë e vërtetë - ndoshta NUK ËSHTË e vërtetë.",
-            "Gjithmonë pyet një të rritur përpara se të fusësh ÇFARËDO informacioni personal ose informacion të kartës online."
+            "Gjithmonë pyet një të rrituri përpara se të fusësh ÇFARËDO informacioni personal ose informacion të kartës online."
         ],
         "lesson": "Nëse diçka tingëllon shumë mirë - ndoshta është mashtrim!"
     },
@@ -183,13 +183,13 @@ REAL_STORIES_SQ = {
         "story": [
             "Petari ishte 13 vjeç dhe luante futboll në ekipin e shkollës.",
             "Në një stërvitje, ai u rrëzua dhe ra në baltë përpara të gjithëve. Të gjithë qeshën - ishte qesharake.",
-            "Por shoku i tij Andrej e filmoi me telefon. Petari mendoi se ishte vetëm për shaka.",
+            "But shoku i tij Andrej e filmoi me telefon. Petari mendoi se ishte vetëm për shaka.",
             "Ditën tjetër, në pushim, të gjithë e shikonin çuditshëm. Disa po qeshnin.",
             "'Petar, je viral!' - thirri dikush.",
             "Petari hapi Instagram. Andrej kishte postuar videon me përshkrimin: 'Rënia më e budallaqe që kam parë 😂😂😂'",
             "Videoja kishte 500 shikime. Komentet ishin edhe më të këqija: 'Çfarë është kjo?', 'Hahaha çfarë budallai', 'Nuk mund të luajë futboll'.",
             "Petari u ndje keq. Donte të qante, por kishte turp.",
-            "Në shtëpi, nuk mund të hante. Nuk mund të flinte. Mendonte vazhdimisht për videon.",
+            "In shtëpi, nuk mund të hante. Nuk mund të flinte. Mendonte vazhdimisht për videon.",
             "Ditën tjetër, nuk donte të shkonte në shkollë. 'Më dhemb stomaku' - i gënjeu nënës së tij.",
             "Por motra e tij më e madhe Milica vuri re se çfarë po ndodhte. Ajo e pa videon.",
             "Milica shkoi te drejtori. E tregoi videon dhe shpjegoi se kjo ishte ngacmim kibernetik.",
@@ -199,6 +199,106 @@ REAL_STORIES_SQ = {
             "Dhe Andrej mësoi: Përpara se të postosh diçka për dikë tjetër - pyet veten: 'A do të doja që kjo të publikohej për MENE?'"
         ],
         "lesson": "Thuaji një të rrituri nëse të ngacmojnë online. Mos posto gjëra turpëruese për të tjerët!"
+    }
+}
+
+# Real stories - English
+REAL_STORIES_EN = {
+    1: {
+        "title": "Story: Luka and the Group that Kicked Him Out",
+        "story": [
+            "Luka was a 12-year-old student who loved playing football and video games.",
+            "He had a Viber group with 8 school friends. Every day they talked, joked, and planned games after school.",
+            "One day, Luka posted a photo of his new football shoes - he got them for his birthday. He was very proud. But one of his friends, Darko, wrote:",
+            "'Hahaha who buys such cheap shoes? Mine cost 200 euros.'",
+            "Another friend, Filip, joined in: 'Luka always wears cheap things.'",
+            "Luka felt insulted but decided not to reply. The next day, something even worse happened.",
+            "He noticed he was no longer in the group. He checked - they had KICKED HIM OUT.",
+            "At school, they acted like nothing was happening. But Luka heard them whispering and laughing.",
+            "He started to feel lonely. During breaks, he sat alone. In class, he couldn't concentrate.",
+            "At home, his mother noticed something was wrong. 'Luka, is everything okay?' - she asked.",
+            "'Yes, mom' - he lied, even though it hurt inside.",
+            "The next day, his teacher noticed Luka was sad. She talked to him and found out what happened.",
+            "The teacher called all the children for a talk. She explained that what they did to Luka is called 'cyberbullying' and that it's wrong.",
+            "Darko and Filip apologized. Luka was added back to the group. But most importantly - Luka learned that you should ALWAYS tell an adult when something is wrong."
+        ],
+        "lesson": "Always tell an adult when something is wrong online. You are not alone!"
+    },
+    2: {
+        "title": "Story: Ana and the Fake Friend",
+        "story": [
+            "Ana was 13 years old and loved playing online games. Her favorite was a city-building game.",
+            "One day, while playing, someone named 'CoolGamer123' sent her a friend request.",
+            "'Hi! I saw you are good at this game. Want to play together?' - he wrote.",
+            "Ana was happy to have a new friend to play with. They started talking every day.",
+            "After a week, CoolGamer123 asked her: 'What school do you go to? Maybe we are from the same city!'",
+            "Ana wanted to answer, but she remembered what her mother always told her: 'Never give personal information to strangers on the internet.'",
+            "'Sorry, I can't tell you' - Ana replied.",
+            "CoolGamer123 continued: 'Come on, I'm safe! I just want to know so we can meet in real life!'",
+            "This made Ana nervous. Why would someone she doesn't know want to meet in real life?",
+            "She told her father. He immediately blocked CoolGamer123 and explained that you should NEVER trust strangers from the internet.",
+            "Later, they discovered that CoolGamer123 was an adult man pretending to be a child to get information.",
+            "Ana learned an important lesson: Not everyone on the internet is who they say they are. Always be careful with strangers."
+        ],
+        "lesson": "Never share personal information with strangers on the internet!"
+    },
+    3: {
+        "title": "Story: Marko and the Stolen Identity",
+        "story": [
+            "Marko was a 14-year-old student who liked sharing photos on Instagram.",
+            "One day, he posted a photo of his new bike in front of his house. He added the description: 'New bike!'",
+            "His friends liked and commented - Marko was happy.",
+            "The next week, while he was at school, someone entered his yard and stole the bike!",
+            "How did they know where he lived? From his photo! The house address was clearly visible in the picture.",
+            "Marko was upset. His father explained that when you post photos, people can see MUCH more than you think.",
+            "The address, street name, even when you're not home - they can discover all of this from photos.",
+            "But there was something worse. Someone created a fake profile with Marko's photos and started asking his friends for money!",
+            "His friends were confused: 'Marko, why are you asking for money?'",
+            "Marko had to explain to everyone that it WAS NOT him. His personal photos were stolen.",
+            "The police helped delete the fake profile, but Marko learned an important lesson:",
+            "Think TWICE before you post something online. Once it's published, you can't take it back."
+        ],
+        "lesson": "Be careful what you share online - once posted, it can't be taken back!"
+    },
+    4: {
+        "title": "Story: Sofia and the Fake Prize",
+        "story": [
+            "Sofia was 12 years old and loved to sing. Her favorite singer was Ariana Grande.",
+            "One day, while browsing Instagram, she saw an ad: 'CONGRATULATIONS! YOU HAVE BEEN CHOSEN TO RECEIVE FREE TICKETS FOR THE ARIANA GRANDE CONCERT!'",
+            "Sofia was overjoyed! This was her dream!",
+            "She clicked on the ad. The website looked professional - it had logos, photos, everything looked real.",
+            "'To get the tickets, enter the following information:' - the page said.",
+            "It asked for: name, surname, address, phone number, and... a parent's credit card number 'for verification'.",
+            "Sofia was so excited she almost entered it. But then she remembered: 'Why would they ask for a card number for FREE tickets?'",
+            "She asked her mother for help. Her mother immediately recognized that this was a SCAM.",
+            "Together they reported the site. They found out that thousands of children were scammed in the same way.",
+            "The people behind the scam were stealing money from the credit cards of parents.",
+            "Sofia learned: If something sounds too good to be true - it probably IS NOT true.",
+            "Always ask an adult before entering ANY personal or card information online."
+        ],
+        "lesson": "If something sounds too good to be true - it's probably a scam!"
+    },
+    5: {
+        "title": "Story: Petar and the Viral Video",
+        "story": [
+            "Petar was 13 years old and played football in the school team.",
+            "At one training, he tripped and fell into the mud in front of everyone. Everyone laughed - it was funny.",
+            "But his friend Andrej filmed it on his phone. Petar thought it was just for a joke.",
+            "The next day, during the break, everyone was looking at him strangely. Some were laughing.",
+            "'Petar, you're viral!' - someone shouted.",
+            "Petar opened Instagram. Andrej had posted the video with the description: 'The stupidest fall I've ever seen 😂😂😂'",
+            "The video had 500 views. The comments were even worse: 'What is this?', 'Haha what a fool', 'He can't play football'.",
+            "Petar felt ashamed. He didn't want to play football anymore. He wanted to cry, but he was ashamed.",
+            "At home, he couldn't eat. He couldn't sleep. He kept thinking about the video.",
+            "The next day, he didn't want to go to school. 'My stomach hurts' - he lied to his mother.",
+            "But his older sister Milica noticed what was happening. She saw the video.",
+            "Milica went to the principal. She showed the video and explained that this was cyberbullying.",
+            "The principal called Andrej and his parents for a talk. The video was deleted.",
+            "Andrej apologized in front of the whole class. 'I thought it was just a joke. I didn't know it would hurt you so much.'",
+            "Petar learned that you should ALWAYS tell an adult when something hurts you online.",
+            "And Andrej learned: Before you post something about someone else - ask yourself: 'Would I want this to be posted about ME?'"
+        ],
+        "lesson": "Tell an adult if you are being bullied online. Don't post embarrassing things about others!"
     }
 }
 
@@ -262,11 +362,43 @@ LEVEL_TIPS_SQ = {
     ]
 }
 
+# Level tips - English
+LEVEL_TIPS_EN = {
+    1: [
+        "Collect coins and jump on enemies for questions",
+        "Answer questions correctly for more points",
+        "Avoid the red obstacles",
+        "Collect a shield for an extra life"
+    ],
+    2: [
+        "Watch out for moving platforms",
+        "Questions get harder",
+        "Use SPACE to jump"
+    ],
+    3: [
+        "More obstacles and platforms",
+        "Watch the time!",
+        "Every coin brings a question"
+    ],
+    4: [
+        "Hardest level",
+        "Fast obstacles",
+        "Accuracy is key"
+    ],
+    5: [
+        "Final level - show what you've learned!",
+        "Combination of everything",
+        "Defeat everyone!"
+    ]
+}
+
 
 def get_story(level_num, language='mk'):
     """Get story for level in specified language"""
     if language == 'sq':
         return REAL_STORIES_SQ.get(level_num)
+    elif language == 'en':
+        return REAL_STORIES_EN.get(level_num)
     return REAL_STORIES_MK.get(level_num)
 
 
@@ -274,4 +406,6 @@ def get_tips(level_num, language='mk'):
     """Get tips for level in specified language"""
     if language == 'sq':
         return LEVEL_TIPS_SQ.get(level_num, [])
+    elif language == 'en':
+        return LEVEL_TIPS_EN.get(level_num, [])
     return LEVEL_TIPS_MK.get(level_num, [])

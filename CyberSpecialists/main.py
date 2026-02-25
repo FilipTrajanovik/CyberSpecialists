@@ -68,22 +68,14 @@ def pause_menu(screen, clock, fonts, lang_manager):
         screen.blit(overlay, (0, 0))
 
         # Draw pause title
-        if lang_manager.get_lang_code() == 'sq':
-            pause_text = "Pauza"
-        else:
-            pause_text = "Пауза"
-
+        pause_text = lang_manager.get('pause')
         draw_text_with_shadow(screen, pause_text, SCREEN_WIDTH // 2, 200,
                               fonts['title'], YELLOW, DARK_BLUE, 5)
 
         mouse_pressed = pygame.mouse.get_pressed()[0]
 
         # Resume button
-        if lang_manager.get_lang_code() == 'sq':
-            resume_text = "Vazhdo"
-        else:
-            resume_text = "Продолжи"
-
+        resume_text = lang_manager.get('resume')
         if draw_cute_button(screen, resume_text, 400, 350, 400, 80,
                             GREEN, DARK_BLUE, fonts['large']):
             if mouse_pressed and not button_was_pressed:
@@ -92,11 +84,7 @@ def pause_menu(screen, clock, fonts, lang_manager):
                 return 'resume'
 
         # Exit to menu button
-        if lang_manager.get_lang_code() == 'sq':
-            exit_text = "Kthehu në Menu"
-        else:
-            exit_text = "Назад кон Мени"
-
+        exit_text = lang_manager.get('menu')
         if draw_cute_button(screen, exit_text, 400, 460, 400, 80,
                             RED, PINK, fonts['large']):
             if mouse_pressed and not button_was_pressed:
@@ -157,15 +145,20 @@ def language_selection_screen():
                 screen.blit(char_images[2], (SCREEN_WIDTH - 320, char_y))
 
         mouse_pressed = pygame.mouse.get_pressed()[0]
-        if draw_cute_button(screen, "Македонски", 300, 480, 250, 80,
+        if draw_cute_button(screen, "Македонски", 110, 480, 250, 80,
                             CYAN, BLUE, fonts['medium']):
             if mouse_pressed and not button_was_pressed:
                 selected_lang = 'mk'
 
-        if draw_cute_button(screen, "Shqip", 650, 480, 250, 80,
+        if draw_cute_button(screen, "Shqip", 475, 480, 250, 80,
                             GREEN, DARK_BLUE, fonts['medium']):
             if mouse_pressed and not button_was_pressed:
                 selected_lang = 'sq'
+
+        if draw_cute_button(screen, "English", 840, 480, 250, 80,
+                            ORANGE, RED, fonts['medium']):
+            if mouse_pressed and not button_was_pressed:
+                selected_lang = 'en'
 
         button_was_pressed = mouse_pressed
 
@@ -267,11 +260,7 @@ def settings_screen():
             # Main settings screen - show current info and action buttons
 
             # Title
-            if lang_manager.get_lang_code() == 'sq':
-                title_text = "Cilësimet"
-            else:
-                title_text = "Поставки"
-
+            title_text = lang_manager.get('settings')
             draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 80,
                                   fonts['large'], YELLOW, DARK_BLUE, 4)
 
@@ -288,14 +277,9 @@ def settings_screen():
             pygame.draw.rect(screen, GOLD, info_box_rect, 3, border_radius=15)
 
             # Display current time info
-            if lang_manager.get_lang_code() == 'sq':
-                limit_text = f"Limit ditor: {limit} minuta"
-                played_text = f"Luajtur sot: {played} minuta"
-                remaining_text = f"Mbetur: {remaining} minuta"
-            else:
-                limit_text = f"Дневен лимит: {limit} минути"
-                played_text = f"Играно денес: {played} минути"
-                remaining_text = f"Преостанато: {remaining} минути"
+            limit_text = f"{lang_manager.get('daily_limit_label')} {limit} {lang_manager.get('minutes')}"
+            played_text = f"{lang_manager.get('played_today')} {played} {lang_manager.get('minutes')}"
+            remaining_text = f"{lang_manager.get('remaining_label')} {remaining} {lang_manager.get('minutes')}"
 
             limit_surface = fonts['medium'].render(limit_text, True, WHITE)
             played_surface = fonts['medium'].render(played_text, True, YELLOW)
@@ -306,11 +290,7 @@ def settings_screen():
             screen.blit(remaining_surface, (info_box_rect.centerx - remaining_surface.get_width() // 2, 265))
 
             # Action selection text
-            if lang_manager.get_lang_code() == 'sq':
-                action_text = "Zgjidhni veprimin:"
-            else:
-                action_text = "Изберете акција:"
-
+            action_text = lang_manager.get('select_action')
             action_surface = fonts['medium'].render(action_text, True, WHITE)
             screen.blit(action_surface, (SCREEN_WIDTH // 2 - action_surface.get_width() // 2, 330))
 
@@ -320,11 +300,7 @@ def settings_screen():
             button_y = 400
 
             # SET button (set new limit from 0)
-            if lang_manager.get_lang_code() == 'sq':
-                set_btn_text = "Vendos Limit të Ri"
-            else:
-                set_btn_text = "Постави Нов Лимит"
-
+            set_btn_text = lang_manager.get('set_new_limit')
             if draw_cute_button(screen, set_btn_text, 200, button_y, 350, 70,
                                 CYAN, BLUE, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -333,11 +309,7 @@ def settings_screen():
                     pygame.event.clear()
 
             # ADD button (add time to current limit)
-            if lang_manager.get_lang_code() == 'sq':
-                add_btn_text = "Shto Kohë"
-            else:
-                add_btn_text = "Додај Време"
-
+            add_btn_text = lang_manager.get('add_time')
             if draw_cute_button(screen, add_btn_text, 700, button_y, 300, 70,
                                 GREEN, DARK_BLUE, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -346,11 +318,7 @@ def settings_screen():
                     pygame.event.clear()
 
             # RESET button (reset today's played time to 0)
-            if lang_manager.get_lang_code() == 'sq':
-                reset_btn_text = "Rivendos Kohën e Luajtur"
-            else:
-                reset_btn_text = "Ресетирај Играно Време"
-
+            reset_btn_text = lang_manager.get('reset_played_time')
             if draw_cute_button(screen, reset_btn_text, 350, button_y + 100, 500, 70,
                                 ORANGE, RED, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -359,11 +327,7 @@ def settings_screen():
                     pygame.event.clear()
 
             # Back button
-            if lang_manager.get_lang_code() == 'sq':
-                back_text = "Kthehu"
-            else:
-                back_text = "Назад"
-
+            back_text = lang_manager.get('back')
             if draw_cute_button(screen, back_text, 450, 650, 300, 60,
                                 RED, PINK, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -375,12 +339,8 @@ def settings_screen():
 
         elif mode == 'set':
             # SET mode - choose new limit (replaces current limit)
-            if lang_manager.get_lang_code() == 'sq':
-                title_text = "Vendos Limit të Ri"
-                instruction_text = "Zgjidhni limitin e ri ditor:"
-            else:
-                title_text = "Постави Нов Лимит"
-                instruction_text = "Изберете нов дневен лимит:"
+            title_text = lang_manager.get('set_new_limit')
+            instruction_text = lang_manager.get('choose_new_limit')
 
             draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 100,
                                   fonts['large'], YELLOW, DARK_BLUE, 4)
@@ -397,10 +357,7 @@ def settings_screen():
                 x = 250 + col * 250
                 y = 280 + row * 100
 
-                if lang_manager.get_lang_code() == 'sq':
-                    time_text = f"{time_opt} minuta"
-                else:
-                    time_text = f"{time_opt} минути"
+                time_text = f"{time_opt} {lang_manager.get('minutes')}"
 
                 button_color = GREEN if time_opt == selected_time else CYAN
                 hover_color = DARK_BLUE if time_opt == selected_time else BLUE
@@ -415,21 +372,14 @@ def settings_screen():
             pygame.draw.rect(screen, GOLD, selected_box, border_radius=15)
             pygame.draw.rect(screen, WHITE, selected_box, 3, border_radius=15)
 
-            if lang_manager.get_lang_code() == 'sq':
-                selected_display_text = f"Zgjedhur: {selected_time} minuta"
-            else:
-                selected_display_text = f"Избрано: {selected_time} минути"
+            selected_display_text = f"{lang_manager.get('selected')}: {selected_time} {lang_manager.get('minutes')}"
 
             selected_display = fonts['medium'].render(selected_display_text, True, BLACK)
             selected_rect = selected_display.get_rect(center=selected_box.center)
             screen.blit(selected_display, selected_rect)
 
             # Confirm button
-            if lang_manager.get_lang_code() == 'sq':
-                confirm_text = "Konfirmo"
-            else:
-                confirm_text = "Потврди"
-
+            confirm_text = lang_manager.get('confirm')
             if draw_cute_button(screen, confirm_text, 350, 610, 250, 60,
                                 GREEN, DARK_BLUE, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -440,11 +390,7 @@ def settings_screen():
                     pygame.event.clear()
 
             # Back button
-            if lang_manager.get_lang_code() == 'sq':
-                back_text = "Kthehu"
-            else:
-                back_text = "Назад"
-
+            back_text = lang_manager.get('back')
             if draw_cute_button(screen, back_text, 650, 610, 250, 60,
                                 RED, PINK, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -456,12 +402,8 @@ def settings_screen():
 
         elif mode == 'add':
             # ADD mode - add time to current limit
-            if lang_manager.get_lang_code() == 'sq':
-                title_text = "Shto Kohë"
-                instruction_text = "Sa minuta të shtohen?"
-            else:
-                title_text = "Додај Време"
-                instruction_text = "Колку минути да се додадат?"
+            title_text = lang_manager.get('add_time')
+            instruction_text = lang_manager.get('how_many_minutes')
 
             draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 100,
                                   fonts['large'], YELLOW, DARK_BLUE, 4)
@@ -478,10 +420,7 @@ def settings_screen():
                 x = 250 + col * 250
                 y = 280 + row * 100
 
-                if lang_manager.get_lang_code() == 'sq':
-                    time_text = f"+{time_opt} min"
-                else:
-                    time_text = f"+{time_opt} мин"
+                time_text = f"+{time_opt} {lang_manager.get('min')}"
 
                 button_color = GREEN if time_opt == selected_time else CYAN
                 hover_color = DARK_BLUE if time_opt == selected_time else BLUE
@@ -496,21 +435,14 @@ def settings_screen():
             pygame.draw.rect(screen, GOLD, selected_box, border_radius=15)
             pygame.draw.rect(screen, WHITE, selected_box, 3, border_radius=15)
 
-            if lang_manager.get_lang_code() == 'sq':
-                selected_display_text = f"Do të shtohen: +{selected_time} minuta"
-            else:
-                selected_display_text = f"Ќе се додадат: +{selected_time} минути"
+            selected_display_text = f"{lang_manager.get('will_be_added')} +{selected_time} {lang_manager.get('minutes')}"
 
             selected_display = fonts['medium'].render(selected_display_text, True, BLACK)
             selected_rect = selected_display.get_rect(center=selected_box.center)
             screen.blit(selected_display, selected_rect)
 
             # Confirm button
-            if lang_manager.get_lang_code() == 'sq':
-                confirm_text = "Konfirmo"
-            else:
-                confirm_text = "Потврди"
-
+            confirm_text = lang_manager.get('confirm')
             if draw_cute_button(screen, confirm_text, 350, 610, 250, 60,
                                 GREEN, DARK_BLUE, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -521,11 +453,7 @@ def settings_screen():
                     pygame.event.clear()
 
             # Back button
-            if lang_manager.get_lang_code() == 'sq':
-                back_text = "Kthehu"
-            else:
-                back_text = "Назад"
-
+            back_text = lang_manager.get('back')
             if draw_cute_button(screen, back_text, 650, 610, 250, 60,
                                 RED, PINK, fonts['medium']):
                 if mouse_pressed and not button_was_pressed:
@@ -537,18 +465,11 @@ def settings_screen():
 
         elif mode == 'reset':
             # RESET mode - confirm reset of today's played time
-            if lang_manager.get_lang_code() == 'sq':
-                title_text = "Rivendos Kohën e Luajtur"
-                warning_text = "Jeni i sigurt që doni të rivendosni"
-                warning_text2 = "kohën e luajtur sot në 0?"
-                confirm_text = "Po, Rivendos"
-                cancel_text = "Jo, Kthehu"
-            else:
-                title_text = "Ресетирај Играно Време"
-                warning_text = "Дали сте сигурни дека сакате да го"
-                warning_text2 = "ресетирате играното време на 0?"
-                confirm_text = "Да, Ресетирај"
-                cancel_text = "Не, Назад"
+            title_text = lang_manager.get('reset_played_time')
+            warning_text = lang_manager.get('confirm_reset_q')
+            warning_text2 = lang_manager.get('confirm_reset_q2')
+            confirm_text = lang_manager.get('yes_reset')
+            cancel_text = lang_manager.get('no_back')
 
             draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 150,
                                   fonts['large'], YELLOW, DARK_BLUE, 4)
@@ -793,7 +714,7 @@ def main_menu():
     for i in range(1, 4):
         try:
             img = pygame.image.load(f'creatives/slika{i}-removebg-preview.png')
-            img = pygame.transform.scale(img, (120, 120))
+            img = pygame.transform.scale(img, (80, 80))  # Reduced size to fit
             char_images.append(img)
         except:
             char_images.append(None)
@@ -804,11 +725,14 @@ def main_menu():
     except:
         spaceship_button_img = None
 
-    # Load maze button image for Level 3
+    # Load Level 3 button image
     try:
-        maze_button_img = pygame.image.load('creatives/maze-button.png')
+        level3_button_img = pygame.image.load('images/maze-button.png')
     except:
-        maze_button_img = None
+        try:
+            level3_button_img = pygame.image.load('creatives/level3-removebg-preview.png')
+        except:
+            level3_button_img = None
 
     # Load Super Mario button image for Level 1
     try:
@@ -832,11 +756,11 @@ def main_menu():
         draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
 
         title = lang_manager.get('title')
-        draw_text_with_shadow(screen, title, SCREEN_WIDTH // 2, 100,
+        draw_text_with_shadow(screen, title, SCREEN_WIDTH // 2, 50,
                               fonts['large'], YELLOW, DARK_BLUE, 4)
 
         if current_user:
-            # Get total points from database - REFRESHED EVERY FRAME FOR SYNCHRONIZATION
+            # Get total points from database
             try:
                 cursor = db.conn.cursor()
                 cursor.execute("SELECT SUM(score) FROM scores WHERE user_id = ?", (current_user['id'],))
@@ -845,12 +769,12 @@ def main_menu():
             except:
                 total_points = 0
 
-            # Create user info box (username + points)
-            info_text = f"{current_user['username']} | {total_points} поени / merak"
+            # Create user info box
+            info_text = f"{current_user['username']} | {total_points} {lang_manager.get('score')}"
             info_surface = fonts['medium'].render(info_text, True, WHITE)
-            info_rect = info_surface.get_rect(center=(SCREEN_WIDTH // 2, 160))
+            info_rect = info_surface.get_rect(center=(SCREEN_WIDTH // 2, 100))
 
-            # Draw background box with gradient effect
+            # Draw box
             box_padding = 20
             info_box = pygame.Rect(
                 info_rect.x - box_padding,
@@ -858,203 +782,141 @@ def main_menu():
                 info_rect.width + box_padding * 2,
                 info_rect.height + 20
             )
-
-            # Shadow
-            shadow_box = info_box.copy()
-            shadow_box.x += 4
-            shadow_box.y += 4
-            pygame.draw.rect(screen, BLACK, shadow_box, border_radius=15)
-
-            # Main box
             pygame.draw.rect(screen, DARK_BLUE, info_box, border_radius=15)
             pygame.draw.rect(screen, GOLD, info_box, 3, border_radius=15)
-
-            # Username and points text
             screen.blit(info_surface, info_rect)
 
         if current_user and current_user.get('play_time_limit', 0) > 0:
             remaining = db.get_play_time_remaining(current_user['id'])
-
             time_box = pygame.Rect(SCREEN_WIDTH - 200, 20, 180, 50)
-
-            if remaining > 30:
-                time_color = GREEN
-            elif remaining > 10:
-                time_color = ORANGE
-            else:
-                time_color = RED
-
+            time_color = GREEN if remaining > 30 else (ORANGE if remaining > 10 else RED)
             pygame.draw.rect(screen, time_color, time_box, border_radius=15)
             pygame.draw.rect(screen, WHITE, time_box, 3, border_radius=15)
-
             time_text = f"{remaining} {lang_manager.get('min')}"
             time_surface = fonts['small'].render(time_text, True, WHITE)
             time_rect = time_surface.get_rect(center=time_box.center)
             screen.blit(time_surface, time_rect)
 
-        char_y = 210
+        # Characters
+        char_y = 130
         spacing = SCREEN_WIDTH // 4
         for i, char_img in enumerate(char_images):
             if char_img:
-                x_pos = spacing * (i + 1) - 60
+                x_pos = spacing * (i + 1) - 40
                 screen.blit(char_img, (x_pos, char_y))
 
-        button_y = 340
-        button_spacing = 70
+        # Levels Section
+        button_y_start = 220
+        button_height = 65
+        button_spacing = 85  # 65px height + 20px gap
+        button_width = 700
+        button_x = (SCREEN_WIDTH - button_width) // 2
 
         mouse_pressed = pygame.mouse.get_pressed()[0]
+        mouse_pos = pygame.mouse.get_pos()
 
-        # Map level images
         level_images = {
-            1: supermario_button_img,
-            2: parkour_button_img,
-            3: maze_button_img,
-            4: spaceship_button_img,
+            1: supermario_button_img, 2: parkour_button_img,
+            3: level3_button_img, 4: spaceship_button_img,
             5: memory_button_img
         }
 
-        # Level colors for backgrounds
+        # Unique Level Colors
         level_colors = [CYAN, ORANGE, GREEN, RED, PURPLE]
 
         for level_num in range(1, 6):
             level_key = f'level{level_num}'
             level_text = lang_manager.get(level_key)
-            y_pos = button_y + (level_num - 1) * button_spacing
+            y_pos = button_y_start + (level_num - 1) * button_spacing
 
-            # Button dimensions
-            button_x = 200
-            button_width = 800
-            button_height = 60
-
-            # Image on left, text on right design
-            img_width = 280  # Image takes left portion
-            text_width = button_width - img_width  # Text takes right portion
-
-            mouse_pos = pygame.mouse.get_pos()
             button_rect = pygame.Rect(button_x, y_pos, button_width, button_height)
             is_hovering = button_rect.collidepoint(mouse_pos)
+            is_clicking = is_hovering and mouse_pressed
 
-            # Shadow
-            shadow_rect = pygame.Rect(button_x + 4, y_pos + 4, button_width, button_height)
-            pygame.draw.rect(screen, (0, 0, 0, 150), shadow_rect, border_radius=20)
+            # Click Offset
+            draw_y = y_pos + (2 if is_clicking else 0)
+            
+            # Button Color Logic
+            base_color = level_colors[level_num - 1]
+            if is_clicking:
+                draw_color = tuple(max(0, c - 40) for c in base_color)
+            elif is_hovering:
+                draw_color = tuple(min(255, c + 30) for c in base_color)
+            else:
+                draw_color = base_color
 
-            # Main button background (gradient effect)
-            button_color = level_colors[level_num - 1]
+            # Draw shadow
+            pygame.draw.rect(screen, (0, 0, 0, 80), (button_x + 4, draw_y + 4, button_width, button_height), border_radius=32)
 
-            # Draw button base with color
-            pygame.draw.rect(screen, button_color, button_rect, border_radius=20)
+            # Main pill base
+            pygame.draw.rect(screen, draw_color, (button_x, draw_y, button_width, button_height), border_radius=32)
 
-            # Add semi-transparent overlay for depth
-            overlay = pygame.Surface((button_width, button_height), pygame.SRCALPHA)
-            overlay.fill((255, 255, 255, 30))
-            screen.blit(overlay, (button_x, y_pos))
+            # Glass Effect (Top highlight)
+            glass_surface = pygame.Surface((button_width, button_height // 2), pygame.SRCALPHA)
+            glass_surface.fill((255, 255, 255, 30))
+            screen.blit(glass_surface, (button_x, draw_y))
 
-            # Image section (left side)
-            img_rect = pygame.Rect(button_x + 8, y_pos + 8, img_width - 16, button_height - 16)
+            # Icon Container (100px width sub-rect)
+            icon_box = pygame.Rect(button_x + 5, draw_y + 5, 90, button_height - 10)
+            pygame.draw.rect(screen, WHITE, icon_box, border_radius=25)
+            pygame.draw.rect(screen, DARK_BLUE, icon_box, 2, border_radius=25)
 
             if level_images[level_num]:
-                # Draw white background for image area
-                pygame.draw.rect(screen, WHITE, img_rect, border_radius=15)
+                img = level_images[level_num]
+                img_aspect = img.get_width() / img.get_height()
+                target_h = icon_box.height - 10
+                target_w = int(target_h * img_aspect)
+                if target_w > icon_box.width - 10:
+                    target_w = icon_box.width - 10
+                    target_h = int(target_w / img_aspect)
+                
+                scaled_img = pygame.transform.scale(img, (target_w, target_h))
+                screen.blit(scaled_img, (icon_box.centerx - target_w // 2, icon_box.centery - target_h // 2))
 
-                # Scale and draw image inside
-                img_inner_rect = pygame.Rect(img_rect.x + 4, img_rect.y + 4,
-                                             img_rect.width - 8, img_rect.height - 8)
-                scaled_img = pygame.transform.scale(level_images[level_num],
-                                                    (img_inner_rect.width, img_inner_rect.height))
-                screen.blit(scaled_img, (img_inner_rect.x, img_inner_rect.y))
-            else:
-                # Fallback: colored rectangle if no image
-                pygame.draw.rect(screen, button_color, img_rect, border_radius=15)
-
-            # Text section (right side) with colored background
-            text_rect_bg = pygame.Rect(button_x + img_width, y_pos + 8,
-                                       text_width - 8, button_height - 16)
-
-            # Darker shade for text background
-            text_bg_color = tuple(max(0, c - 40) for c in button_color)
-            pygame.draw.rect(screen, text_bg_color, text_rect_bg, border_radius=15)
-
-            # Draw level number circle
-            number_circle_x = button_x + img_width + 40
-            number_circle_y = y_pos + button_height // 2
-            pygame.draw.circle(screen, WHITE, (number_circle_x, number_circle_y), 20)
-            pygame.draw.circle(screen, button_color, (number_circle_x, number_circle_y), 17)
-
-            number_surface = fonts['medium'].render(str(level_num), True, WHITE)
-            number_rect = number_surface.get_rect(center=(number_circle_x, number_circle_y))
-            screen.blit(number_surface, number_rect)
-
-            # Draw level text
-            text_x = button_x + img_width + 80
-            text_y = y_pos + button_height // 2
-
-            # Text shadow for better readability
-            shadow_surface = fonts['medium'].render(level_text, True, BLACK)
-            shadow_rect = shadow_surface.get_rect(midleft=(text_x + 2, text_y + 2))
-            screen.blit(shadow_surface, shadow_rect)
-
-            # Main text
+            # Text section - Centered in remaining space
+            text_area_x = button_x + 100
+            text_area_width = button_width - 100
             text_surface = fonts['medium'].render(level_text, True, WHITE)
-            text_rect = text_surface.get_rect(midleft=(text_x, text_y))
+            text_rect = text_surface.get_rect(center=(text_area_x + text_area_width // 2, draw_y + button_height // 2))
+            
+            # Text shadow
+            shadow_surf = fonts['medium'].render(level_text, True, BLACK)
+            screen.blit(shadow_surf, (text_rect.x + 2, text_rect.y + 2))
             screen.blit(text_surface, text_rect)
 
-            # Border - thicker and white
-            pygame.draw.rect(screen, WHITE, button_rect, 4, border_radius=20)
+            # White Border
+            pygame.draw.rect(screen, WHITE, (button_x, draw_y, button_width, button_height), 3, border_radius=32)
 
-            # Hover glow effect
-            if is_hovering:
-                glow_rect = pygame.Rect(button_x - 3, y_pos - 3, button_width + 6, button_height + 6)
-                pygame.draw.rect(screen, YELLOW, glow_rect, 4, border_radius=22)
-
-                # Add shine effect
-                shine = pygame.Surface((button_width, button_height // 2), pygame.SRCALPHA)
-                shine.fill((255, 255, 255, 40))
-                screen.blit(shine, (button_x, y_pos))
-
-                if mouse_pressed and not button_was_pressed:
-                    pygame.time.wait(300)
-                    pygame.event.clear()
-                    return level_num
-
-        # Settings button (NOW OPENS SETTINGS SCREEN)
-        if lang_manager.get_lang_code() == 'sq':
-            settings_text = "Cilësimet"
-        else:
-            settings_text = "Поставки"
-
-        if draw_cute_button(screen, settings_text, 20, 720, 180, 50,
-                            PURPLE, PINK, fonts['small']):
-            if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200)
+            if is_hovering and mouse_pressed and not button_was_pressed:
+                pygame.time.wait(300)
                 pygame.event.clear()
-                return 'settings'
+                return level_num
 
-        # Leaderboard button
-        if lang_manager.get_lang_code() == 'sq':
-            leaderboard_text = "Rezultatet"
-        else:
-            leaderboard_text = "Табела"
-
-        if draw_cute_button(screen, leaderboard_text, 1000, 720, 180, 50,
-                            GOLD, ORANGE, fonts['small']):
+        # Bottom Row
+        FOREST_GREEN = (34, 139, 34)
+        bottom_y = 720
+        
+        # Settings (250px)
+        if draw_cute_button(screen, lang_manager.get('settings'), 50, bottom_y, 250, 60, FOREST_GREEN, GREEN, fonts['small']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200)
-                pygame.event.clear()
-                return 'leaderboard'
+                pygame.time.wait(200); pygame.event.clear(); return 'settings'
 
-        # Trophy Cabinet button
-        if lang_manager.get_lang_code() == 'sq':
-            trophy_text = "Trofetë"
-        else:
-            trophy_text = "Трофеи"
-
-        if draw_cute_button(screen, trophy_text, 420, 720, 180, 50,
-                            GREEN, CYAN, fonts['small']):
+        # Trophy Cabinet (440px)
+        if draw_cute_button(screen, lang_manager.get('trophy_cabinet'), 380, bottom_y, 440, 60, FOREST_GREEN, GREEN, fonts['small']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200)
-                pygame.event.clear()
-                trophy_screen = TrophyCabinet(fonts, lang_manager, db, current_user['id'])
-                trophy_screen.show(screen, clock)
+                pygame.time.wait(200); pygame.event.clear()
+                TrophyCabinet(fonts, lang_manager, db, current_user['id']).show(screen, clock)
+
+        # Leaderboard (250px)
+        if draw_cute_button(screen, lang_manager.get('leaderboard'), 900, bottom_y, 250, 60, FOREST_GREEN, GREEN, fonts['small']):
+            if mouse_pressed and not button_was_pressed:
+                pygame.time.wait(200); pygame.event.clear(); return 'leaderboard'
+
+        button_was_pressed = mouse_pressed
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: pygame.quit(); sys.exit()
+        pygame.display.flip()
+        clock.tick(FPS)
 
         button_was_pressed = mouse_pressed
 
@@ -1090,10 +952,7 @@ def leaderboard_screen():
 
         # Search placeholder or text
         if search_text == "" and not search_active:
-            if lang_manager.get_lang_code() == 'sq':
-                placeholder = "Kërko emrin..."
-            else:
-                placeholder = "Пребарај име..."
+            placeholder = lang_manager.get('search_player')
             search_surface = fonts['small'].render(placeholder, True, LIGHT_GRAY)
         else:
             search_surface = fonts['small'].render(search_text, True, BLACK)
@@ -1125,10 +984,7 @@ def leaderboard_screen():
 
         if len(filtered_players) == 0:
             if search_text:
-                if lang_manager.get_lang_code() == 'sq':
-                    no_data_text = "Nuk u gjet asnjë lojtar!"
-                else:
-                    no_data_text = "Не е пронајден играч!"
+                no_data_text = lang_manager.get('no_player_found')
             else:
                 no_data_text = lang_manager.get('no_scores')
 
@@ -1140,10 +996,7 @@ def leaderboard_screen():
             header_box = pygame.Rect(250, y_offset, 700, 40)
             pygame.draw.rect(screen, DARK_BLUE, header_box, border_radius=10)
 
-            if lang_manager.get_lang_code() == 'sq':
-                header_text = "Renditja       Emri                    Pikët"
-            else:
-                header_text = "Ранг       Име                    Поени"
+            header_text = f"{lang_manager.get('rank')}       {lang_manager.get('name')}                    {lang_manager.get('score')}"
 
             header_surface = fonts['small'].render(header_text, True, GOLD)
             header_rect = header_surface.get_rect(center=header_box.center)
@@ -1181,10 +1034,7 @@ def leaderboard_screen():
 
             # Show count of results
             if search_text:
-                if lang_manager.get_lang_code() == 'sq':
-                    count_text = f"Gjetur: {len(filtered_players)} lojtar"
-                else:
-                    count_text = f"Најдени: {len(filtered_players)} играчи"
+                count_text = f"{lang_manager.get('found_players')} {len(filtered_players)}"
 
                 count_surface = fonts['tiny'].render(count_text, True, LIGHT_GRAY)
                 count_rect = count_surface.get_rect(center=(SCREEN_WIDTH // 2, y_offset + 10))

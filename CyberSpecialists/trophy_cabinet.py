@@ -85,14 +85,10 @@ class TrophyCabinet:
 
         while True:
             # Background
-            draw_gradient_background(screen, (40, 30, 50), (20, 15, 30))
+            draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
 
             # Title
-            if self.lang.get_lang_code() == 'sq':
-                title_text = "Kabineti i Trofeëve"
-            else:
-                title_text = "Кабинет на Трофеи"
-
+            title_text = self.lang.get('trophy_cabinet')
             draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 60,
                                   self.fonts['title'], GOLD, (80, 50, 20), 5)
 
@@ -176,11 +172,7 @@ class TrophyCabinet:
                                     0, 3.14159, 5)
 
                     # Locked text
-                    if self.lang.get_lang_code() == 'sq':
-                        lock_text = "E mbyllur"
-                    else:
-                        lock_text = "Заклучено"
-
+                    lock_text = self.lang.get('locked')
                     lock_surface = self.fonts['tiny'].render(lock_text, True, (120, 120, 120))
                     lock_rect = lock_surface.get_rect(center=(medal_x, medal_y + 50))
                     screen.blit(lock_surface, lock_rect)
@@ -194,11 +186,7 @@ class TrophyCabinet:
                 pygame.draw.rect(screen, (80, 50, 25), label_rect, 2, border_radius=8)
 
                 # Level name
-                if self.lang.get_lang_code() == 'sq':
-                    level_name = f"Niveli {level_num}"
-                else:
-                    level_name = f"Ниво {level_num}"
-
+                level_name = f"{self.lang.get('level')} {level_num}"
                 name_surface = self.fonts['tiny'].render(level_name, True, (220, 200, 150))
                 name_rect = name_surface.get_rect(center=label_rect.center)
                 screen.blit(name_surface, name_rect)
@@ -222,11 +210,7 @@ class TrophyCabinet:
             pygame.draw.rect(screen, (80, 50, 25), total_plaque, 4, border_radius=12)
 
             # Total text
-            if self.lang.get_lang_code() == 'sq':
-                total_text = f"Totali: {total_completions} Përfundime"
-            else:
-                total_text = f"Вкупно: {total_completions} Завршувања"
-
+            total_text = f"{self.lang.get('total')} {total_completions} {self.lang.get('completions')}"
             total_surface = self.fonts['medium'].render(total_text, True, GOLD)
             total_rect = total_surface.get_rect(center=total_plaque.center)
             screen.blit(total_surface, total_rect)
@@ -343,12 +327,8 @@ def show_level_complete_animation(screen, clock, fonts, lang_manager, level_num)
 
         # Draw congratulations text
         if text_alpha > 0:
-            if lang_manager.get_lang_code() == 'sq':
-                congrats_text = "Urime!"
-                complete_text = "Niveli U Përfundua!"
-            else:
-                congrats_text = "Честитки!"
-                complete_text = "Ниво Завршено!"
+            congrats_text = lang_manager.get('congratulations')
+            complete_text = lang_manager.get('level_complete')
 
             congrats_surface = fonts['title'].render(congrats_text, True, GOLD)
             congrats_surface.set_alpha(text_alpha)

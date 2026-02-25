@@ -27,29 +27,55 @@ def draw_text_with_shadow(surface, text, x, y, font, color, shadow_color, shadow
 
 
 def draw_cute_button(surface, text, x, y, width, height, color, hover_color, font):
-    """Draw button with hover effect"""
+    """Draw pill-shaped button with glass effect and click feedback"""
     mouse_pos = pygame.mouse.get_pos()
+    mouse_pressed = pygame.mouse.get_pressed()[0]
     button_rect = pygame.Rect(x, y, width, height)
     is_hovering = button_rect.collidepoint(mouse_pos)
+    is_clicking = is_hovering and mouse_pressed
+
+    # Draw Y offset for click feel
+    draw_y = y + (2 if is_clicking else 0)
+    pill_rect = pygame.Rect(x, draw_y, width, height)
+    radius = height // 2
 
     # Shadow
-    shadow_rect = pygame.Rect(x + 5, y + 5, width, height)
-    pygame.draw.rect(surface, BLACK, shadow_rect, border_radius=20)
+    shadow_rect = pygame.Rect(x + 4, draw_y + 4, width, height)
+    pygame.draw.rect(surface, (0, 0, 0, 80), shadow_rect, border_radius=radius)
 
-    # Button
-    button_color = hover_color if is_hovering else color
-    pygame.draw.rect(surface, button_color, button_rect, border_radius=20)
-    pygame.draw.rect(surface, WHITE, button_rect, 4, border_radius=20)
+    # Button Color Logic
+    if is_clicking:
+        draw_color = tuple(max(0, c - 40) for c in color)
+    elif is_hovering:
+        draw_color = hover_color
+    else:
+        draw_color = color
+
+    # Main Pill Base
+    pygame.draw.rect(surface, draw_color, pill_rect, border_radius=radius)
+
+    # Glass Effect (Top highlight)
+    glass_rect = pygame.Rect(x, draw_y, width, height // 2)
+    glass_surface = pygame.Surface((width, height // 2), pygame.SRCALPHA)
+    glass_surface.fill((255, 255, 255, 30))
+    surface.blit(glass_surface, (x, draw_y))
+
+    # White Border
+    pygame.draw.rect(surface, WHITE, pill_rect, 3, border_radius=radius)
 
     # Text - CENTERED
     text_surface = font.render(text, True, WHITE)
-    text_rect = text_surface.get_rect(center=button_rect.center)
+    text_rect = text_surface.get_rect(center=pill_rect.center)
+    
+    # Text shadow
+    shadow_surf = font.render(text, True, BLACK)
+    surface.blit(shadow_surf, (text_rect.x + 2, text_rect.y + 2))
     surface.blit(text_surface, text_rect)
 
-    # Glow effect when hovering
-    if is_hovering:
-        glow_rect = pygame.Rect(x - 3, y - 3, width + 6, height + 6)
-        pygame.draw.rect(surface, YELLOW, glow_rect, 3, border_radius=22)
+    # Hover glow
+    if is_hovering and not is_clicking:
+        glow_rect = pygame.Rect(x - 2, draw_y - 2, width + 4, height + 4)
+        pygame.draw.rect(surface, YELLOW, glow_rect, 2, border_radius=radius + 2)
 
     return is_hovering
 
