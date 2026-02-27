@@ -1,9 +1,8 @@
 
-
+# -*- coding: utf-8 -*-
 import pygame
 import math
 from constants import *
-
 
 def draw_gradient_background(surface, color1, color2):
     """Draw vertical gradient background"""

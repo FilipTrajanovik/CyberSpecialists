@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Mini-games for each level - Different gameplay mechanics
 """

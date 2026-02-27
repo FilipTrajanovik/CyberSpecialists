@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Obstacles, platforms, and collectibles - FIXED HITBOXES
 """

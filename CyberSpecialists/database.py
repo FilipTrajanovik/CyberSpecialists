@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Database module - User authentication, leaderboard, and parental controls
 """

@@ -1,15 +1,16 @@
 """
 COMPLETE WORKING main.py - Albanian support + All levels working + Points synchronized + Settings Screen
 """
-
+# -*- coding: utf-8 -*-
 import pygame
 import sys
 import time
+import asyncio
 from constants import *
 from language import LanguageManager
 from database import Database
 from ui import draw_gradient_background, draw_cute_button, draw_text_with_shadow
-from trophy_cabinet import TrophyCabinet, show_level_complete_animation
+from trophy_cabinet import TrophyCabinet, show_level_complete_animation, show_level_complete_animation_async
 
 # Initialize Pygame
 pygame.init()
@@ -109,6 +110,65 @@ def pause_menu(screen, clock, fonts, lang_manager):
         clock.tick(FPS)
 
 
+async def pause_menu_async(screen, clock, fonts, lang_manager):
+    """
+    Pause menu with Resume and Exit options
+    Returns: 'resume' or 'exit'
+    """
+    button_was_pressed = False
+
+    # Create semi-transparent overlay
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    overlay.set_alpha(180)
+    overlay.fill((0, 0, 0))
+
+    while True:
+        # Draw the overlay
+        screen.blit(overlay, (0, 0))
+
+        # Draw pause title
+        pause_text = lang_manager.get('pause')
+        draw_text_with_shadow(screen, pause_text, SCREEN_WIDTH // 2, 200,
+                              fonts['title'], YELLOW, DARK_BLUE, 5)
+
+        mouse_pressed = pygame.mouse.get_pressed()[0]
+
+        # Resume button
+        resume_text = lang_manager.get('resume')
+        if draw_cute_button(screen, resume_text, 400, 350, 400, 80,
+                            GREEN, DARK_BLUE, fonts['large']):
+            if mouse_pressed and not button_was_pressed:
+                await asyncio.sleep(0.2)
+                pygame.event.clear()
+                return 'resume'
+
+        # Exit to menu button
+        exit_text = lang_manager.get('menu')
+        if draw_cute_button(screen, exit_text, 400, 460, 400, 80,
+                            RED, PINK, fonts['large']):
+            if mouse_pressed and not button_was_pressed:
+                await asyncio.sleep(0.2)
+                pygame.event.clear()
+                return 'exit'
+
+        button_was_pressed = mouse_pressed
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    # Press ESC again to resume
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+                    return 'resume'
+
+        pygame.display.flip()
+        clock.tick(FPS)
+        await asyncio.sleep(0)
+
+
 def language_selection_screen():
     """Language selection screen"""
     button_was_pressed = False
@@ -172,6 +232,73 @@ def language_selection_screen():
 
     lang_manager.set_language(selected_lang)
     pygame.time.wait(500)
+    pygame.event.clear()
+
+
+async def language_selection_screen_async():
+    """Language selection screen"""
+    button_was_pressed = False
+    selected_lang = None
+
+    char_images = []
+    for i in range(1, 4):
+        try:
+            img = pygame.image.load(f'creatives/slika{i}-removebg-preview.png')
+            img = pygame.transform.scale(img, (120, 120))
+            char_images.append(img)
+        except:
+            char_images.append(None)
+
+    while selected_lang is None:
+        draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
+
+        title_text = "Избери Јазик / Zgjidh Gjuhën"
+        draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 150,
+                              fonts['title'], YELLOW, DARK_BLUE, 5)
+
+        subtitle_text = "Select Language"
+        subtitle_surface = fonts['large'].render(subtitle_text, True, WHITE)
+        subtitle_rect = subtitle_surface.get_rect(center=(SCREEN_WIDTH // 2, 240))
+        screen.blit(subtitle_surface, subtitle_rect)
+
+        char_y = 300
+        if len(char_images) >= 3:
+            if char_images[0]:
+                screen.blit(char_images[0], (200, char_y))
+            if char_images[1]:
+                screen.blit(char_images[1], (SCREEN_WIDTH // 2 - 60, char_y))
+            if char_images[2]:
+                screen.blit(char_images[2], (SCREEN_WIDTH - 320, char_y))
+
+        mouse_pressed = pygame.mouse.get_pressed()[0]
+        if draw_cute_button(screen, "Македонски", 110, 480, 250, 80,
+                            CYAN, BLUE, fonts['medium']):
+            if mouse_pressed and not button_was_pressed:
+                selected_lang = 'mk'
+
+        if draw_cute_button(screen, "Shqip", 475, 480, 250, 80,
+                            GREEN, DARK_BLUE, fonts['medium']):
+            if mouse_pressed and not button_was_pressed:
+                selected_lang = 'sq'
+
+        if draw_cute_button(screen, "English", 840, 480, 250, 80,
+                            ORANGE, RED, fonts['medium']):
+            if mouse_pressed and not button_was_pressed:
+                selected_lang = 'en'
+
+        button_was_pressed = mouse_pressed
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.flip()
+        clock.tick(FPS)
+        await asyncio.sleep(0)
+
+    lang_manager.set_language(selected_lang)
+    await asyncio.sleep(0.5)
     pygame.event.clear()
 
 
@@ -241,6 +368,75 @@ def set_play_time_screen():
 
         pygame.display.flip()
         clock.tick(FPS)
+
+
+async def set_play_time_screen_async():
+    """Parent sets daily play time limit"""
+    button_was_pressed = False
+    selected_time = 30
+    time_options = [15, 30, 45, 60, 90, 120]
+
+    while True:
+        draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
+
+        draw_text_with_shadow(screen, lang_manager.get('parental_control'), SCREEN_WIDTH // 2, 80,
+                              fonts['large'], YELLOW, DARK_BLUE, 4)
+
+        try:
+            parent_img = pygame.image.load('creatives/slika2-removebg-preview.png')
+            parent_img = pygame.transform.scale(parent_img, (100, 100))
+            screen.blit(parent_img, (SCREEN_WIDTH // 2 - 50, 150))
+        except:
+            pass
+
+        instruction1 = fonts['small'].render(lang_manager.get('for_parents'), True, WHITE)
+        inst1_rect = instruction1.get_rect(center=(SCREEN_WIDTH // 2, 280))
+        screen.blit(instruction1, inst1_rect)
+
+        mouse_pressed = pygame.mouse.get_pressed()[0]
+
+        for i, time_opt in enumerate(time_options):
+            row = i // 3
+            col = i % 3
+            x = 250 + col * 250
+            y = 380 + row * 100
+
+            time_text = f"{time_opt} {lang_manager.get('min')}"
+            button_color = GREEN if time_opt == selected_time else CYAN
+            hover_color = DARK_BLUE if time_opt == selected_time else BLUE
+
+            if draw_cute_button(screen, time_text, x, y, 200, 70,
+                                button_color, hover_color, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    selected_time = time_opt
+
+        selected_box = pygame.Rect(400, 600, 400, 60)
+        pygame.draw.rect(screen, GOLD, selected_box, border_radius=15)
+        pygame.draw.rect(screen, WHITE, selected_box, 3, border_radius=15)
+        selected_display = fonts['medium'].render(
+            f"{lang_manager.get('selected')}: {selected_time} {lang_manager.get('minutes_per_day')}",
+            True, BLACK
+        )
+        selected_rect = selected_display.get_rect(center=selected_box.center)
+        screen.blit(selected_display, selected_rect)
+
+        if draw_cute_button(screen, lang_manager.get('confirm_and_start'), 350, 690, 500, 70,
+                            GREEN, DARK_BLUE, fonts['medium']):
+            if mouse_pressed and not button_was_pressed:
+                await asyncio.sleep(0.2)
+                pygame.event.clear()
+                return selected_time
+
+        button_was_pressed = mouse_pressed
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.flip()
+        clock.tick(FPS)
+        await asyncio.sleep(0)
 
 
 def settings_screen():
@@ -528,6 +724,292 @@ def settings_screen():
         clock.tick(FPS)
 
 
+async def settings_screen_async():
+    """Settings screen - manage play time"""
+    await asyncio.sleep(0.2)
+    pygame.event.clear()
+
+    button_was_pressed = False
+    mode = 'main'  # 'main', 'set', 'add', 'reset'
+    selected_time = 60
+    time_options = [15, 30, 60, 90, 120, 240]
+
+    while True:
+        draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
+
+        if mode == 'main':
+            # Main settings screen - show current info and action buttons
+
+            # Title
+            title_text = lang_manager.get('settings')
+            draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 80,
+                                  fonts['large'], YELLOW, DARK_BLUE, 4)
+
+            # Get current play time info
+            if current_user:
+                limit, played = db.get_play_time_info(current_user['id'])
+                remaining = limit - played
+            else:
+                limit, played, remaining = 60, 0, 60
+
+            # Current play time info box
+            info_box_rect = pygame.Rect(250, 150, 700, 180)
+            pygame.draw.rect(screen, DARK_BLUE, info_box_rect, border_radius=15)
+            pygame.draw.rect(screen, GOLD, info_box_rect, 3, border_radius=15)
+
+            # Display current time info
+            limit_text = f"{lang_manager.get('daily_limit_label')} {limit} {lang_manager.get('minutes')}"
+            played_text = f"{lang_manager.get('played_today')} {played} {lang_manager.get('minutes')}"
+            remaining_text = f"{lang_manager.get('remaining_label')} {remaining} {lang_manager.get('minutes')}"
+
+            limit_surface = fonts['medium'].render(limit_text, True, WHITE)
+            played_surface = fonts['medium'].render(played_text, True, YELLOW)
+            remaining_surface = fonts['medium'].render(remaining_text, True, GREEN if remaining > 30 else RED)
+
+            screen.blit(limit_surface, (info_box_rect.centerx - limit_surface.get_width() // 2, 175))
+            screen.blit(played_surface, (info_box_rect.centerx - played_surface.get_width() // 2, 220))
+            screen.blit(remaining_surface, (info_box_rect.centerx - remaining_surface.get_width() // 2, 265))
+
+            # Action selection text
+            action_text = lang_manager.get('select_action')
+            action_surface = fonts['medium'].render(action_text, True, WHITE)
+            screen.blit(action_surface, (SCREEN_WIDTH // 2 - action_surface.get_width() // 2, 330))
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            # Action buttons
+            button_y = 400
+
+            # SET button (set new limit from 0)
+            set_btn_text = lang_manager.get('set_new_limit')
+            if draw_cute_button(screen, set_btn_text, 200, button_y, 350, 70,
+                                CYAN, BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'set'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # ADD button (add time to current limit)
+            add_btn_text = lang_manager.get('add_time')
+            if draw_cute_button(screen, add_btn_text, 700, button_y, 300, 70,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'add'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # RESET button (reset today's played time to 0)
+            reset_btn_text = lang_manager.get('reset_played_time')
+            if draw_cute_button(screen, reset_btn_text, 350, button_y + 100, 500, 70,
+                                ORANGE, RED, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'reset'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # Back button
+            back_text = lang_manager.get('back')
+            if draw_cute_button(screen, back_text, 450, 650, 300, 60,
+                                RED, PINK, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+                    return
+
+            button_was_pressed = mouse_pressed
+
+        elif mode == 'set':
+            # SET mode - choose new limit (replaces current limit)
+            title_text = lang_manager.get('set_new_limit')
+            instruction_text = lang_manager.get('choose_new_limit')
+
+            draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 100,
+                                  fonts['large'], YELLOW, DARK_BLUE, 4)
+
+            instruction_surface = fonts['medium'].render(instruction_text, True, WHITE)
+            screen.blit(instruction_surface, (SCREEN_WIDTH // 2 - instruction_surface.get_width() // 2, 180))
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            # Time option buttons
+            for i, time_opt in enumerate(time_options):
+                row = i // 3
+                col = i % 3
+                x = 250 + col * 250
+                y = 280 + row * 100
+
+                time_text = f"{time_opt} {lang_manager.get('minutes')}"
+
+                button_color = GREEN if time_opt == selected_time else CYAN
+                hover_color = DARK_BLUE if time_opt == selected_time else BLUE
+
+                if draw_cute_button(screen, time_text, x, y, 200, 70,
+                                    button_color, hover_color, fonts['medium']):
+                    if mouse_pressed and not button_was_pressed:
+                        selected_time = time_opt
+
+            # Show selected
+            selected_box = pygame.Rect(350, 520, 500, 60)
+            pygame.draw.rect(screen, GOLD, selected_box, border_radius=15)
+            pygame.draw.rect(screen, WHITE, selected_box, 3, border_radius=15)
+
+            selected_display_text = f"{lang_manager.get('selected')}: {selected_time} {lang_manager.get('minutes')}"
+
+            selected_display = fonts['medium'].render(selected_display_text, True, BLACK)
+            selected_rect = selected_display.get_rect(center=selected_box.center)
+            screen.blit(selected_display, selected_rect)
+
+            # Confirm button
+            confirm_text = lang_manager.get('confirm')
+            if draw_cute_button(screen, confirm_text, 350, 610, 250, 60,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    if current_user:
+                        db.update_play_time_limit(current_user['id'], selected_time)
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # Back button
+            back_text = lang_manager.get('back')
+            if draw_cute_button(screen, back_text, 650, 610, 250, 60,
+                                RED, PINK, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            button_was_pressed = mouse_pressed
+
+        elif mode == 'add':
+            # ADD mode - add time to current limit
+            title_text = lang_manager.get('add_time')
+            instruction_text = lang_manager.get('how_many_minutes')
+
+            draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 100,
+                                  fonts['large'], YELLOW, DARK_BLUE, 4)
+
+            instruction_surface = fonts['medium'].render(instruction_text, True, WHITE)
+            screen.blit(instruction_surface, (SCREEN_WIDTH // 2 - instruction_surface.get_width() // 2, 180))
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            # Time option buttons
+            for i, time_opt in enumerate(time_options):
+                row = i // 3
+                col = i % 3
+                x = 250 + col * 250
+                y = 280 + row * 100
+
+                time_text = f"+{time_opt} {lang_manager.get('min')}"
+
+                button_color = GREEN if time_opt == selected_time else CYAN
+                hover_color = DARK_BLUE if time_opt == selected_time else BLUE
+
+                if draw_cute_button(screen, time_text, x, y, 200, 70,
+                                    button_color, hover_color, fonts['medium']):
+                    if mouse_pressed and not button_was_pressed:
+                        selected_time = time_opt
+
+            # Show selected
+            selected_box = pygame.Rect(350, 520, 500, 60)
+            pygame.draw.rect(screen, GOLD, selected_box, border_radius=15)
+            pygame.draw.rect(screen, WHITE, selected_box, 3, border_radius=15)
+
+            selected_display_text = f"{lang_manager.get('will_be_added')} +{selected_time} {lang_manager.get('minutes')}"
+
+            selected_display = fonts['medium'].render(selected_display_text, True, BLACK)
+            selected_rect = selected_display.get_rect(center=selected_box.center)
+            screen.blit(selected_display, selected_rect)
+
+            # Confirm button
+            confirm_text = lang_manager.get('confirm')
+            if draw_cute_button(screen, confirm_text, 350, 610, 250, 60,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    if current_user:
+                        db.extend_play_time(current_user['id'], selected_time)
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # Back button
+            back_text = lang_manager.get('back')
+            if draw_cute_button(screen, back_text, 650, 610, 250, 60,
+                                RED, PINK, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            button_was_pressed = mouse_pressed
+
+        elif mode == 'reset':
+            # RESET mode - confirm reset of today's played time
+            title_text = lang_manager.get('reset_played_time')
+            warning_text = lang_manager.get('confirm_reset_q')
+            warning_text2 = lang_manager.get('confirm_reset_q2')
+            confirm_text = lang_manager.get('yes_reset')
+            cancel_text = lang_manager.get('no_back')
+
+            draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 150,
+                                  fonts['large'], YELLOW, DARK_BLUE, 4)
+
+            # Warning icon
+            pygame.draw.circle(screen, ORANGE, (SCREEN_WIDTH // 2, 280), 60)
+            pygame.draw.circle(screen, YELLOW, (SCREEN_WIDTH // 2, 280), 55)
+            warning_symbol = fonts['title'].render("!", True, RED)
+            warning_rect = warning_symbol.get_rect(center=(SCREEN_WIDTH // 2, 280))
+            screen.blit(warning_symbol, warning_rect)
+
+            # Warning text
+            warning_surface1 = fonts['medium'].render(warning_text, True, WHITE)
+            warning_surface2 = fonts['medium'].render(warning_text2, True, WHITE)
+            screen.blit(warning_surface1, (SCREEN_WIDTH // 2 - warning_surface1.get_width() // 2, 370))
+            screen.blit(warning_surface2, (SCREEN_WIDTH // 2 - warning_surface2.get_width() // 2, 420))
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            # Confirm button
+            if draw_cute_button(screen, confirm_text, 300, 500, 300, 70,
+                                RED, PINK, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    if current_user:
+                        db.reset_daily_play_time(current_user['id'])
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            # Cancel button
+            if draw_cute_button(screen, cancel_text, 700, 500, 300, 70,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'main'
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            button_was_pressed = mouse_pressed
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if mode == 'main':
+                        await asyncio.sleep(0.2)
+                        pygame.event.clear()
+                        return
+                    else:
+                        mode = 'main'
+                        await asyncio.sleep(0.2)
+                        pygame.event.clear()
+
+        pygame.display.flip()
+        clock.tick(FPS)
+        await asyncio.sleep(0)
+
+
 def login_register_screen():
     """Login or Register screen"""
     global current_user
@@ -703,9 +1185,185 @@ def login_register_screen():
         clock.tick(FPS)
 
 
-def main_menu():
+async def login_register_screen_async():
+    """Login or Register screen"""
+    global current_user
+    button_was_pressed = False
+    mode = 'main'
+    username_input = ''
+    password_input = ''
+    message = ''
+    message_color = WHITE
+    active_field = 'username'
+
+    while current_user is None:
+        draw_gradient_background(screen, GRADIENTS['menu'][0], GRADIENTS['menu'][1])
+
+        if mode == 'main':
+            title = lang_manager.get('title')
+            draw_text_with_shadow(screen, title, SCREEN_WIDTH // 2, 150,
+                                  fonts['title'], YELLOW, DARK_BLUE, 5)
+
+            subtitle = lang_manager.get('subtitle')
+            subtitle_surface = fonts['medium'].render(subtitle, True, WHITE)
+            subtitle_rect = subtitle_surface.get_rect(center=(SCREEN_WIDTH // 2, 250))
+            screen.blit(subtitle_surface, subtitle_rect)
+
+            char_images = []
+            for i in range(1, 4):
+                try:
+                    img = pygame.image.load(f'creatives/slika{i}-removebg-preview.png')
+                    img = pygame.transform.scale(img, (150, 150))
+                    char_images.append(img)
+                except:
+                    char_images.append(None)
+
+            char_y = 300
+            spacing = SCREEN_WIDTH // 4
+            for i, char_img in enumerate(char_images):
+                if char_img:
+                    x_pos = spacing * (i + 1) - 75
+                    screen.blit(char_img, (x_pos, char_y))
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+            if draw_cute_button(screen, lang_manager.get('login'), 350, 500, 200, 70,
+                                BLUE, CYAN, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'login'
+                    message = ''
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            if draw_cute_button(screen, lang_manager.get('register'), 650, 500, 300, 70,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'register'
+                    message = ''
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            button_was_pressed = mouse_pressed
+
+        elif mode in ['login', 'register']:
+            title_text = lang_manager.get('login_title') if mode == 'login' else lang_manager.get('register_title')
+            draw_text_with_shadow(screen, title_text, SCREEN_WIDTH // 2, 150,
+                                  fonts['large'], YELLOW, DARK_BLUE, 4)
+
+            username_label = fonts['small'].render(lang_manager.get('username'), True, WHITE)
+            screen.blit(username_label, (400, 280))
+
+            username_box = pygame.Rect(400, 320, 400, 50)
+            username_color = YELLOW if active_field == 'username' else WHITE
+            pygame.draw.rect(screen, username_color, username_box, 3, border_radius=10)
+            pygame.draw.rect(screen, DARK_BLUE, username_box, border_radius=10)
+
+            username_surface = fonts['medium'].render(username_input, True, WHITE)
+            screen.blit(username_surface, (410, 330))
+
+            password_label = fonts['small'].render(lang_manager.get('password'), True, WHITE)
+            screen.blit(password_label, (400, 400))
+
+            password_box = pygame.Rect(400, 440, 400, 50)
+            password_color = YELLOW if active_field == 'password' else WHITE
+            pygame.draw.rect(screen, password_color, password_box, 3, border_radius=10)
+            pygame.draw.rect(screen, DARK_BLUE, password_box, border_radius=10)
+
+            password_display = '*' * len(password_input)
+            password_surface = fonts['medium'].render(password_display, True, WHITE)
+            screen.blit(password_surface, (410, 450))
+
+            if message:
+                message_surface = fonts['small'].render(message, True, message_color)
+                message_rect = message_surface.get_rect(center=(SCREEN_WIDTH // 2, 530))
+                screen.blit(message_surface, message_rect)
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            button_text = lang_manager.get('login') if mode == 'login' else lang_manager.get('register')
+            if draw_cute_button(screen, button_text, 450, 570, 300, 60,
+                                GREEN, DARK_BLUE, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    if username_input and password_input:
+                        if mode == 'register':
+                            play_time_limit = await set_play_time_screen_async()
+                            current_lang = lang_manager.get_lang_code()
+                            success, user_id = db.register_user(username_input, password_input,
+                                                                current_lang,
+                                                                play_time_limit)
+                            if success:
+                                message = lang_manager.get('registration_success')
+                                message_color = GREEN
+                                success, user_data = db.login_user(username_input, password_input)
+                                if success:
+                                    current_user = user_data
+                                    saved_lang = user_data.get('language', 'mk')
+                                    lang_manager.set_language(saved_lang)
+                                    break
+                            else:
+                                message = lang_manager.get('username_taken')
+                                message_color = RED
+                        else:
+                            success, user_data = db.login_user(username_input, password_input)
+                            if success:
+                                current_user = user_data
+                                saved_lang = user_data.get('language', 'mk')
+                                lang_manager.set_language(saved_lang)
+                                break
+                            else:
+                                message = lang_manager.get('invalid_credentials')
+                                message_color = RED
+                    else:
+                        message = lang_manager.get('fill_all_fields')
+                        message_color = ORANGE
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            if draw_cute_button(screen, lang_manager.get('back'), 450, 650, 300, 60,
+                                RED, PINK, fonts['medium']):
+                if mouse_pressed and not button_was_pressed:
+                    mode = 'main'
+                    username_input = ''
+                    password_input = ''
+                    message = ''
+                    await asyncio.sleep(0.2)
+                    pygame.event.clear()
+
+            button_was_pressed = mouse_pressed
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if mode in ['login', 'register']:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if username_box.collidepoint(event.pos):
+                        active_field = 'username'
+                    elif password_box.collidepoint(event.pos):
+                        active_field = 'password'
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_BACKSPACE:
+                        if active_field == 'username':
+                            username_input = username_input[:-1]
+                        else:
+                            password_input = password_input[:-1]
+                    elif event.key == pygame.K_TAB:
+                        active_field = 'password' if active_field == 'username' else 'username'
+                    elif event.unicode.isprintable():
+                        if active_field == 'username' and len(username_input) < 20:
+                            username_input += event.unicode
+                        elif active_field == 'password' and len(password_input) < 30:
+                            password_input += event.unicode
+
+        pygame.display.flip()
+        clock.tick(FPS)
+        await asyncio.sleep(0)
+
+
+async def main_menu_async():
     """Main menu"""
-    pygame.time.wait(200)
+    await asyncio.sleep(0.2)
     pygame.event.clear()
 
     button_was_pressed = False
@@ -888,7 +1546,7 @@ def main_menu():
             pygame.draw.rect(screen, WHITE, (button_x, draw_y, button_width, button_height), 3, border_radius=32)
 
             if is_hovering and mouse_pressed and not button_was_pressed:
-                pygame.time.wait(300)
+                await asyncio.sleep(0.3)
                 pygame.event.clear()
                 return level_num
 
@@ -899,39 +1557,30 @@ def main_menu():
         # Settings (250px)
         if draw_cute_button(screen, lang_manager.get('settings'), 50, bottom_y, 250, 60, FOREST_GREEN, GREEN, fonts['small']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200); pygame.event.clear(); return 'settings'
+                await asyncio.sleep(0.2); pygame.event.clear(); return 'settings'
 
         # Trophy Cabinet (440px)
         if draw_cute_button(screen, lang_manager.get('trophy_cabinet'), 380, bottom_y, 440, 60, FOREST_GREEN, GREEN, fonts['small']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200); pygame.event.clear()
-                TrophyCabinet(fonts, lang_manager, db, current_user['id']).show(screen, clock)
+                await asyncio.sleep(0.2); pygame.event.clear()
+                await TrophyCabinet(fonts, lang_manager, db, current_user['id']).show_async(screen, clock)
 
         # Leaderboard (250px)
         if draw_cute_button(screen, lang_manager.get('leaderboard'), 900, bottom_y, 250, 60, FOREST_GREEN, GREEN, fonts['small']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200); pygame.event.clear(); return 'leaderboard'
+                await asyncio.sleep(0.2); pygame.event.clear(); return 'leaderboard'
 
         button_was_pressed = mouse_pressed
         for event in pygame.event.get():
             if event.type == pygame.QUIT: pygame.quit(); sys.exit()
         pygame.display.flip()
         clock.tick(FPS)
-
-        button_was_pressed = mouse_pressed
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-        pygame.display.flip()
-        clock.tick(FPS)
+        await asyncio.sleep(0)
 
 
-def leaderboard_screen():
+async def leaderboard_screen_async():
     """Show leaderboard with search functionality"""
-    pygame.time.wait(200)
+    await asyncio.sleep(0.2)
     pygame.event.clear()
 
     button_was_pressed = False
@@ -1045,7 +1694,7 @@ def leaderboard_screen():
         if draw_cute_button(screen, lang_manager.get('back'), 450, 700, 300, 60,
                             RED, PINK, fonts['medium']):
             if mouse_pressed and not button_was_pressed:
-                pygame.time.wait(200)
+                await asyncio.sleep(0.2)
                 pygame.event.clear()
                 return
 
@@ -1068,7 +1717,7 @@ def leaderboard_screen():
                     if search_active:
                         search_active = False
                     else:
-                        pygame.time.wait(200)
+                        await asyncio.sleep(0.2)
                         pygame.event.clear()
                         return
 
@@ -1084,98 +1733,8 @@ def leaderboard_screen():
 
         pygame.display.flip()
         clock.tick(FPS)
-
-
-def main():
-    """Main game loop"""
-    global play_session_start
-
-    # Language selection
-    language_selection_screen()
-
-    # Login/Register
-    login_register_screen()
-
-    # Start play session timer
-    play_session_start = time.time()
-
-    # Main loop
-    while True:
-        # Show main menu
-        action = main_menu()
-
-        # Check if settings
-        if action == 'settings':
-            settings_screen()
-            continue
-
-        # Check if leaderboard
-        if action == 'leaderboard':
-            leaderboard_screen()
-            continue
-
-        # Check if valid level number
-        if not isinstance(action, int) or action < 1 or action > 5:
-            continue
-
-        # User selected a level
-        level_num = action
-
-        # Show story
-        from story import StoryScreen, TipsScreen
-        story = StoryScreen(level_num, fonts['large'], fonts['medium'],
-                            fonts['small'], fonts['tiny'], lang_manager)
-        story.show(screen, clock)
-
-        # Show tips
-        tips = TipsScreen(level_num, fonts['large'], fonts['medium'],
-                          fonts['small'], fonts['tiny'], lang_manager)
-        tips.show(screen, clock)
-
-        # Choose level type
-        if level_num == 1:
-            from levels import GameLevel
-            level = GameLevel(level_num, 'medium', fonts, lang_manager)
-        elif level_num == 2:
-            from level2_parkour import ParkourLevel
-            level = ParkourLevel(level_num, 'medium', fonts, lang_manager)
-        elif level_num == 3:
-            from level3_maze import MazeLevel
-            level = MazeLevel(level_num, 'medium', fonts, lang_manager)
-        elif level_num == 4:
-            try:
-                from special_levels import SpaceshipLevel
-                level = SpaceshipLevel(level_num, 'medium', fonts, lang_manager)
-            except:
-                from levels import GameLevel
-                level = GameLevel(level_num, 'medium', fonts, lang_manager)
-        elif level_num == 5:
-            try:
-                from special_levels import MemoryCardLevel
-                level = MemoryCardLevel(level_num, 'medium', fonts, lang_manager)
-            except:
-                from levels import GameLevel
-                level = GameLevel(level_num, 'medium', fonts, lang_manager)
-
-        # Play level
-        result = level.run(screen, clock)
-
-        # Save score and COMMIT IMMEDIATELY for point synchronization
-        if current_user and isinstance(result, dict):
-            db.save_score(
-                current_user['id'],
-                level_num,
-                result.get('score', 0),
-                int(result.get('time_taken', 0)),
-                result.get('questions_correct', 0),
-                result.get('questions_total', 0)
-            )
-            db.conn.commit()  # Force commit for immediate points update
-
-            # Show medal celebration
-            if result.get('score', 0) > 0:
-                show_level_complete_animation(screen, clock, fonts, lang_manager, level_num)
+        await asyncio.sleep(0)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

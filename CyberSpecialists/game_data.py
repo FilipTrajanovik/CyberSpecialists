@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Game data - Stories and Tips in Macedonian, Albanian, and English
 """

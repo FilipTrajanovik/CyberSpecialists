@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """
 Level 1: Mario-style platformer with password typing and enemy quiz
 """
 
 import pygame
+import asyncio
 import random
 import math
 from constants import *
@@ -10,7 +12,7 @@ from player import Player
 from obstacles import Coin, Platform, Enemy, MovingEnemy, Shield, Finish
 from ui import Camera, Timer, ScoreDisplay, QuizOverlay, draw_gradient_background
 from questions_bank import get_randomized_questions
-from main import pause_menu
+from main import pause_menu, pause_menu_async
 
 
 class PasswordTypingOverlay:
@@ -230,7 +232,7 @@ class GameLevel:
 
         # Load coin collection sound
         try:
-            self.coin_sound = pygame.mixer.Sound('coincollect.wav')
+            self.coin_sound = pygame.mixer.Sound('coincollect.ogg')
             self.coin_sound.set_volume(0.5)
         except:
             self.coin_sound = None
@@ -422,7 +424,7 @@ class GameLevel:
                         enemy.defeat()
                         # Play enemy killed sound
                         try:
-                            enemy_sound = pygame.mixer.Sound('creatives/enemy-killed.wav')
+                            enemy_sound = pygame.mixer.Sound('creatives/enemy-killed.ogg')
                             enemy_sound.play()
                         except:
                             pass
@@ -626,11 +628,48 @@ class GameLevel:
                 self.quiz_active = False
                 self.current_quiz = None
 
+    async def handle_input_async(self, event):
+        """Handle input (async)"""
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                if not self.quiz_active and not self.password_active:
+                    from main import fonts, lang_manager, pause_menu_async
+                    result = await pause_menu_async(pygame.display.get_surface(), pygame.time.Clock(), fonts, lang_manager)
+                    if result == 'exit':
+                        self.completed = True
+                        return
+
+        # Password typing
+        if self.password_active and self.password_overlay:
+            self.password_overlay.handle_event(event)
+            if self.password_overlay.completed:
+                if self.password_overlay.success:
+                    self.questions_answered += 1
+                    self.correct_answers += 1
+                    self.level_score += POINTS['quiz_correct']
+                self.score_display.set_score(self.level_score)
+                await asyncio.sleep(0.5)
+                self.password_active = False
+                self.password_overlay = None
+
+        # Quiz input
+        if self.quiz_active and event.type == pygame.MOUSEBUTTONDOWN:
+            result = self.current_quiz.handle_click(event.pos)
+            if result is not None:
+                self.questions_answered += 1
+                if result:
+                    self.correct_answers += 1
+                    self.level_score += POINTS['quiz_correct']
+                self.score_display.set_score(self.level_score)
+                await asyncio.sleep(0.5)
+                self.quiz_active = False
+                self.current_quiz = None
+
     def run(self, screen, clock):
         """Run level"""
         # Start background music
         try:
-            pygame.mixer.music.load('creatives/game-level-music.wav')
+            pygame.mixer.music.load('creatives/game-level-music.ogg')
             pygame.mixer.music.set_volume(0.3)  # 30% volume
             pygame.mixer.music.play(-1)  # Loop forever
         except:
@@ -652,7 +691,7 @@ class GameLevel:
                 # Play medal sound if level completed successfully
                 if self.completed:
                     try:
-                        medal_sound = pygame.mixer.Sound('medal-winning.wav')
+                        medal_sound = pygame.mixer.Sound('medal-winning.ogg')
                         medal_sound.play()
                     except:
                         pass
@@ -670,3 +709,49 @@ class GameLevel:
 
             pygame.display.flip()
             clock.tick(FPS)
+
+    async def run_async(self, screen, clock):
+        """Run level (async)"""
+        # Start background music
+        try:
+            pygame.mixer.music.load('creatives/game-level-music.ogg')
+            pygame.mixer.music.set_volume(0.3)  # 30% volume
+            pygame.mixer.music.play(-1)  # Loop forever
+        except:
+            pass
+
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    import sys
+                    sys.exit()
+                await self.handle_input_async(event)
+
+            self.update()
+            self.draw(screen)
+
+            if self.completed or self.game_over:
+                # Play medal sound if level completed successfully
+                if self.completed:
+                    try:
+                        medal_sound = pygame.mixer.Sound('medal-winning.ogg')
+                        medal_sound.play()
+                    except:
+                        pass
+                await asyncio.sleep(1)
+                # Stop background music
+                pygame.mixer.music.stop()
+
+                return {
+                    'action': 'menu',
+                    'score': self.level_score,
+                    'questions_correct': self.correct_answers,
+                    'questions_total': self.total_questions,
+                    'time_taken': int(self.timer.time_limit - self.timer.time_left)
+                }
+
+            pygame.display.flip()
+            clock.tick(FPS)
+            await asyncio.sleep(0)

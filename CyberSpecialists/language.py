@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Language translations - Macedonian and Albanian
 COMPLETE TRANSLATIONS FOR ENTIRE GAME
